@@ -1,4 +1,82 @@
 # Data structure problem set Chinese version in PTA.
+
+## 6-10 二分查找 (20 分)
+本题要求实现二分查找算法。
+
+***函数接口定义：***
+
+``` C
+Position BinarySearch( List L, ElementType X );
+```
+其中List结构定义如下：
+``` C
+typedef int Position;
+typedef struct LNode *List;
+struct LNode {
+    ElementType Data[MAXSIZE];
+    Position Last; /* 保存线性表中最后一个元素的位置 */
+};
+```
+`L`是用户传入的一个线性表，其中`ElementType`元素可以通过>、==、<进行比较，并且题目保证传入的数据是递增有序的。函数`BinarySearch`要查找`X`在`Data`中的位置，即数组下标（注意：元素从下标1开始存储）。找到则返回下标，否则返回一个特殊的失败标记`NotFound`。
+
+***裁判测试程序样例：***
+``` C
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAXSIZE 10
+#define NotFound 0
+typedef int ElementType;
+
+typedef int Position;
+typedef struct LNode *List;
+struct LNode {
+    ElementType Data[MAXSIZE];
+    Position Last; /* 保存线性表中最后一个元素的位置 */
+};
+
+List ReadInput(); /* 裁判实现，细节不表。元素从下标1开始存储 */
+Position BinarySearch( List L, ElementType X );
+
+int main()
+{
+    List L;
+    ElementType X;
+    Position P;
+
+    L = ReadInput();
+    scanf("%d", &X);
+    P = BinarySearch( L, X );
+    printf("%d\n", P);
+
+    return 0;
+}
+
+/* 你的代码将被嵌在这里 */
+```
+***输入样例1：***
+
+    5
+    12 31 55 89 101
+    31
+
+***输出样例1：***
+
+    2
+
+***输入样例2：***
+
+    3
+    26 78 233
+    31
+
+***输出样例2：***
+
+    0
+
+
+
+-------------------------------------------------------
 ## 7-1 最大子列和问题 (20 分)
 给定K个整数组成的序列 { N<sub>1</sub>, N<sub>2</sub>, ..., N<sub>K</sub> }，“连续子列”被定义为 { N<sub>i</sub>, N<sub>i+1</sub>, ..., N<sub>j</sub> }，其中 1≤i≤j≤K 。“最大子列和”则被定义为所有连续子列元素的和中最大者。例如给定序列 { -2, 11, -4, 13, -5, -2 }，其连续子列 { 11, -4, 13 } 有最大的和20。现要求你编写程序，计算给定整数序列的最大子列和。本题旨在测试各种不同的算法在各种数据情况下的表现。各组测试数据特点如下：
 
