@@ -448,7 +448,330 @@ int main()
     Wrong Position for Deletion
     10 4 2 5 
 
-##
+## 6-6 带头结点的链式表操作集 (20 分)
+本题要求实现带头结点的链式表操作集。
+
+***函数接口定义：***
+```C
+List MakeEmpty(); 
+Position Find( List L, ElementType X );
+bool Insert( List L, ElementType X, Position P );
+bool Delete( List L, Position P );
+```
+其中`List`结构定义如下：
+```C
+typedef struct LNode *PtrToLNode;
+struct LNode {
+    ElementType Data;
+    PtrToLNode Next;
+};
+typedef PtrToLNode Position;
+typedef PtrToLNode List;
+```
+各个操作函数的定义为：
+
+- `List MakeEmpty()`：创建并返回一个空的线性表；
+
+- `Position Find( List L, ElementType X )`：返回线性表中`X`的位置。若找不到则返回`ERROR`；
+
+- `bool Insert( List L, ElementType X, Position P )`：将`X`插入在位置`P`指向的结点之前，返回`true`。如果参数`P`指向非法位置，则打印“Wrong Position for Insertion”，返回`false`；
+
+- `bool Delete( List L, Position P )`：将位置`P`的元素删除并返回`true`。若参数`P`指向非法位置，则打印“Wrong Position for Deletion”并返回`false`。
+
+***裁判测试程序样例：***
+```C
+#include <stdio.h>
+#include <stdlib.h>
+
+#define ERROR NULL
+typedef enum {false, true} bool;
+typedef int ElementType;
+typedef struct LNode *PtrToLNode;
+struct LNode {
+    ElementType Data;
+    PtrToLNode Next;
+};
+typedef PtrToLNode Position;
+typedef PtrToLNode List;
+
+List MakeEmpty(); 
+Position Find( List L, ElementType X );
+bool Insert( List L, ElementType X, Position P );
+bool Delete( List L, Position P );
+
+int main()
+{
+    List L;
+    ElementType X;
+    Position P;
+    int N;
+    bool flag;
+
+    L = MakeEmpty();
+    scanf("%d", &N);
+    while ( N-- ) {
+        scanf("%d", &X);
+        flag = Insert(L, X, L->Next);
+        if ( flag==false ) printf("Wrong Answer\n");
+    }
+    scanf("%d", &N);
+    while ( N-- ) {
+        scanf("%d", &X);
+        P = Find(L, X);
+        if ( P == ERROR )
+            printf("Finding Error: %d is not in.\n", X);
+        else {
+            flag = Delete(L, P);
+            printf("%d is found and deleted.\n", X);
+            if ( flag==false )
+                printf("Wrong Answer.\n");
+        }
+    }
+    flag = Insert(L, X, NULL);
+    if ( flag==false ) printf("Wrong Answer\n");
+    else
+        printf("%d is inserted as the last element.\n", X);
+    P = (Position)malloc(sizeof(struct LNode));
+    flag = Insert(L, X, P);
+    if ( flag==true ) printf("Wrong Answer\n");
+    flag = Delete(L, P);
+    if ( flag==true ) printf("Wrong Answer\n");
+    for ( P=L->Next; P; P = P->Next ) printf("%d ", P->Data);
+    return 0;
+}
+/* 你的代码将被嵌在这里 */
+```
+***输入样例：***
+
+    6
+    12 2 4 87 10 2
+    4
+    2 12 87 5
+
+***输出样例：***
+
+    2 is found and deleted.
+    12 is found and deleted.
+    87 is found and deleted.
+    Finding Error: 5 is not in.
+    5 is inserted as the last element.
+    Wrong Position for Insertion
+    Wrong Position for Deletion
+    10 4 2 5 
+
+## 6-7 在一个数组中实现两个堆栈 (20 分)
+本题要求在一个数组中实现两个堆栈。
+
+***函数接口定义：***
+```C
+Stack CreateStack( int MaxSize );
+bool Push( Stack S, ElementType X, int Tag );
+ElementType Pop( Stack S, int Tag );
+```
+其中`Tag`是堆栈编号，取1或2；`MaxSize`堆栈数组的规模;
+`Stack`结构定义如下：
+```C
+typedef int Position;
+struct SNode {
+    ElementType *Data;
+    Position Top1, Top2;
+    int MaxSize;
+};
+typedef struct SNode *Stack;
+```
+注意：如果堆栈已满，`Push`函数必须输出“Stack Full”并且返回`false`；如果某堆栈是空的，则`Pop`函数必须输出“Stack Tag Empty”（其中`Tag`是该堆栈的编号），并且返回`ERROR`。
+
+***裁判测试程序样例：***
+```C
+#include <stdio.h>
+#include <stdlib.h>
+
+#define ERROR 1e8
+typedef int ElementType;
+typedef enum { push, pop, end } Operation;
+typedef enum { false, true } bool;
+typedef int Position;
+struct SNode {
+    ElementType *Data;
+    Position Top1, Top2;
+    int MaxSize;
+};
+typedef struct SNode *Stack;
+
+Stack CreateStack( int MaxSize );
+bool Push( Stack S, ElementType X, int Tag );
+ElementType Pop( Stack S, int Tag );
+
+Operation GetOp();  /* details omitted */
+void PrintStack( Stack S, int Tag ); /* details omitted */
+
+int main()
+{
+    int N, Tag, X;
+    Stack S;
+    int done = 0;
+
+    scanf("%d", &N);
+    S = CreateStack(N);
+    while ( !done ) {
+        switch( GetOp() ) {
+        case push: 
+            scanf("%d %d", &Tag, &X);
+            if (!Push(S, X, Tag)) printf("Stack %d is Full!\n", Tag);
+            break;
+        case pop:
+            scanf("%d", &Tag);
+            X = Pop(S, Tag);
+            if ( X==ERROR ) printf("Stack %d is Empty!\n", Tag);
+            break;
+        case end:
+            PrintStack(S, 1);
+            PrintStack(S, 2);
+            done = 1;
+            break;
+        }
+    }
+    return 0;
+}
+
+/* 你的代码将被嵌在这里 */
+```
+***输入样例：***
+
+    5
+    Push 1 1
+    Pop 2
+    Push 2 11
+    Push 1 2
+    Push 2 12
+    Pop 1
+    Push 2 13
+    Push 2 14
+    Push 1 3
+    Pop 2
+    End
+
+***输出样例：***
+
+    Stack 2 Empty
+    Stack 2 is Empty!
+    Stack Full
+    Stack 1 is Full!
+    Pop from Stack 1: 1
+    Pop from Stack 2: 13 12 11
+
+## 6-8 求二叉树高度 (20 分)
+本题要求给定二叉树的高度。
+
+***函数接口定义：***
+```C
+int GetHeight( BinTree BT );
+```
+其中`BinTree`结构定义如下：
+```C
+typedef struct TNode *Position;
+typedef Position BinTree;
+struct TNode{
+    ElementType Data;
+    BinTree Left;
+    BinTree Right;
+};
+```
+要求函数返回给定二叉树`BT`的高度值。
+
+***裁判测试程序样例：***
+```C
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef char ElementType;
+typedef struct TNode *Position;
+typedef Position BinTree;
+struct TNode{
+    ElementType Data;
+    BinTree Left;
+    BinTree Right;
+};
+
+BinTree CreatBinTree(); /* 实现细节忽略 */
+int GetHeight( BinTree BT );
+
+int main()
+{
+    BinTree BT = CreatBinTree();
+    printf("%d\n", GetHeight(BT));
+    return 0;
+}
+/* 你的代码将被嵌在这里 */
+```
+***输出样例（对于图中给出的树）：***
+
+![6-8 图1](/img/6-8-fig-1.jpg "6-8 图1")
+
+    4
+
+## 6-9 二叉树的遍历 (25 分)
+本题要求给定二叉树的4种遍历。
+
+***函数接口定义：***
+```C
+void InorderTraversal( BinTree BT );
+void PreorderTraversal( BinTree BT );
+void PostorderTraversal( BinTree BT );
+void LevelorderTraversal( BinTree BT );
+```
+其中`BinTree`结构定义如下：
+```C
+typedef struct TNode *Position;
+typedef Position BinTree;
+struct TNode{
+    ElementType Data;
+    BinTree Left;
+    BinTree Right;
+};
+```
+要求4个函数分别按照访问顺序打印出结点的内容，格式为一个空格跟着一个字符。
+
+***裁判测试程序样例：***
+```C
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef char ElementType;
+typedef struct TNode *Position;
+typedef Position BinTree;
+struct TNode{
+    ElementType Data;
+    BinTree Left;
+    BinTree Right;
+};
+
+BinTree CreatBinTree(); /* 实现细节忽略 */
+void InorderTraversal( BinTree BT );
+void PreorderTraversal( BinTree BT );
+void PostorderTraversal( BinTree BT );
+void LevelorderTraversal( BinTree BT );
+
+int main()
+{
+    BinTree BT = CreatBinTree();
+    printf("Inorder:");    InorderTraversal(BT);    printf("\n");
+    printf("Preorder:");   PreorderTraversal(BT);   printf("\n");
+    printf("Postorder:");  PostorderTraversal(BT);  printf("\n");
+    printf("Levelorder:"); LevelorderTraversal(BT); printf("\n");
+    return 0;
+}
+/* 你的代码将被嵌在这里 */
+```
+***输出样例（对于图中给出的树）：***
+
+![6-9 图1](/img/6-9-fig-1.jpg "6-9 图1")
+
+    Inorder: D B E F A G H C I
+    Preorder: A B D F E C G H I
+    Postorder: D E F B H G I C A
+    Levelorder: A B C D F G I E H
+
 ## 6-10 二分查找 (20 分)
 本题要求实现二分查找算法。
 
@@ -523,6 +846,58 @@ int main()
 
     0
 
+## 6-11 先序输出叶结点 (15 分)
+本题要求按照先序遍历的顺序输出给定二叉树的叶结点。
+
+***函数接口定义：***
+```C
+void PreorderPrintLeaves( BinTree BT );
+```
+其中`BinTree`结构定义如下：
+```C
+typedef struct TNode *Position;
+typedef Position BinTree;
+struct TNode{
+    ElementType Data;
+    BinTree Left;
+    BinTree Right;
+};
+```
+函数`PreorderPrintLeaves`应按照先序遍历的顺序输出给定二叉树`BT`的叶结点，格式为一个空格跟着一个字符。
+
+***裁判测试程序样例：***
+```C
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef char ElementType;
+typedef struct TNode *Position;
+typedef Position BinTree;
+struct TNode{
+    ElementType Data;
+    BinTree Left;
+    BinTree Right;
+};
+
+BinTree CreatBinTree(); /* 实现细节忽略 */
+void PreorderPrintLeaves( BinTree BT );
+
+int main()
+{
+    BinTree BT = CreatBinTree();
+    printf("Leaf nodes are:");
+    PreorderPrintLeaves(BT);
+    printf("\n");
+
+    return 0;
+}
+/* 你的代码将被嵌在这里 */
+```
+***输出样例（对于图中给出的树）：***
+
+![6-11 图1](/img/6-11-fig-1.jpg "6-11 图1")
+
+    Leaf nodes are: D E H I
 
 ## 6-12 二叉搜索树的操作集 (30 分)
 本题要求实现给定二叉搜索树的5种常用操作。
