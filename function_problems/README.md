@@ -225,6 +225,230 @@ int main()
     POSITION 6 EMPTY Deletion Error.
     FULL Insertion Error: 0 is not in.
 
+## 6-3 求链式表的表长 (10 分)
+本题要求实现一个函数，求链式表的表长。
+
+***函数接口定义：***
+```C
+int Length( List L );
+```
+其中`List`结构定义如下：
+```C
+typedef struct LNode *PtrToLNode;
+struct LNode {
+    ElementType Data;
+    PtrToLNode Next;
+};
+typedef PtrToLNode List;
+```
+`L`是给定单链表，函数`Length`要返回链式表的长度。
+
+***裁判测试程序样例：***
+```C
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef int ElementType;
+typedef struct LNode *PtrToLNode;
+struct LNode {
+    ElementType Data;
+    PtrToLNode Next;
+};
+typedef PtrToLNode List;
+
+List Read(); /* 细节在此不表 */
+
+int Length( List L );
+
+int main()
+{
+    List L = Read();
+    printf("%d\n", Length(L));
+    return 0;
+}
+
+/* 你的代码将被嵌在这里 */
+```
+***输入样例：***
+    
+    1 3 4 5 2 -1
+
+***输出样例：***
+
+    5
+
+## 6-4 链式表的按序号查找 (10 分)
+本题要求实现一个函数，找到并返回链式表的第K个元素。
+
+***函数接口定义：***
+```C
+ElementType FindKth( List L, int K );
+```
+其中`List`结构定义如下：
+```C
+typedef struct LNode *PtrToLNode;
+struct LNode {
+    ElementType Data;
+    PtrToLNode Next;
+};
+typedef PtrToLNode List;
+```
+`L`是给定单链表，函数`FindKth`要返回链式表的第`K`个元素。如果该元素不存在，则返回`ERROR`。
+
+***裁判测试程序样例：***
+```C
+#include <stdio.h>
+#include <stdlib.h>
+
+#define ERROR -1
+typedef int ElementType;
+typedef struct LNode *PtrToLNode;
+struct LNode {
+    ElementType Data;
+    PtrToLNode Next;
+};
+typedef PtrToLNode List;
+
+List Read(); /* 细节在此不表 */
+
+ElementType FindKth( List L, int K );
+
+int main()
+{
+    int N, K;
+    ElementType X;
+    List L = Read();
+    scanf("%d", &N);
+    while ( N-- ) {
+        scanf("%d", &K);
+        X = FindKth(L, K);
+        if ( X!= ERROR )
+            printf("%d ", X);
+        else
+            printf("NA ");
+    }
+    return 0;
+}
+
+/* 你的代码将被嵌在这里 */
+```
+***输入样例：***
+
+    1 3 4 5 2 -1
+    6
+    3 6 1 5 4 2
+
+***输出样例：***
+
+    4 NA 1 2 5 3 
+
+## 6-5 链式表操作集 (20 分)
+本题要求实现链式表的操作集。
+
+***函数接口定义：***
+```C
+Position Find( List L, ElementType X );
+List Insert( List L, ElementType X, Position P );
+List Delete( List L, Position P );
+```
+其中`List`结构定义如下：
+```C
+typedef struct LNode *PtrToLNode;
+struct LNode {
+    ElementType Data;
+    PtrToLNode Next;
+};
+typedef PtrToLNode Position;
+typedef PtrToLNode List;
+```
+各个操作函数的定义为：
+
+- `Position Find( List L, ElementType X )`：返回线性表中首次出现X的位置。若找不到则返回`ERROR`；
+
+- `List Insert( List L, ElementType X, Position P )`：将`X`插入在位置`P`指向的结点之前，返回链表的表头。如果参数P指向非法位置，则打印“Wrong Position for Insertion”，返回`ERROR`；
+
+- `List Delete( List L, Position P )`：将位置`P`的元素删除并返回链表的表头。若参数`P`指向非法位置，则打印“Wrong Position for Deletion”并返回`ERROR`。
+
+***裁判测试程序样例：***
+```C
+#include <stdio.h>
+#include <stdlib.h>
+
+#define ERROR NULL
+typedef int ElementType;
+typedef struct LNode *PtrToLNode;
+struct LNode {
+    ElementType Data;
+    PtrToLNode Next;
+};
+typedef PtrToLNode Position;
+typedef PtrToLNode List;
+
+Position Find( List L, ElementType X );
+List Insert( List L, ElementType X, Position P );
+List Delete( List L, Position P );
+
+int main()
+{
+    List L;
+    ElementType X;
+    Position P, tmp;
+    int N;
+
+    L = NULL;
+    scanf("%d", &N);
+    while ( N-- ) {
+        scanf("%d", &X);
+        L = Insert(L, X, L);
+        if ( L==ERROR ) printf("Wrong Answer\n");
+    }
+    scanf("%d", &N);
+    while ( N-- ) {
+        scanf("%d", &X);
+        P = Find(L, X);
+        if ( P == ERROR )
+            printf("Finding Error: %d is not in.\n", X);
+        else {
+            L = Delete(L, P);
+            printf("%d is found and deleted.\n", X);
+            if ( L==ERROR )
+                printf("Wrong Answer or Empty List.\n");
+        }
+    }
+    L = Insert(L, X, NULL);
+    if ( L==ERROR ) printf("Wrong Answer\n");
+    else
+        printf("%d is inserted as the last element.\n", X);
+    P = (Position)malloc(sizeof(struct LNode));
+    tmp = Insert(L, X, P);
+    if ( tmp!=ERROR ) printf("Wrong Answer\n");
+    tmp = Delete(L, P);
+    if ( tmp!=ERROR ) printf("Wrong Answer\n");
+    for ( P=L; P; P = P->Next ) printf("%d ", P->Data);
+    return 0;
+}
+
+/* 你的代码将被嵌在这里 */
+```
+***输入样例：***
+
+    6
+    12 2 4 87 10 2
+    4
+    2 12 87 5
+
+***输出样例：***
+
+    2 is found and deleted.
+    12 is found and deleted.
+    87 is found and deleted.
+    Finding Error: 5 is not in.
+    5 is inserted as the last element.
+    Wrong Position for Insertion
+    Wrong Position for Deletion
+    10 4 2 5 
+
+##
 ## 6-10 二分查找 (20 分)
 本题要求实现二分查找算法。
 
