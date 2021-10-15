@@ -134,16 +134,15 @@ int main(){
     }
     
     int v1,v2;
-
     for (int i = 0; i < E; i++)
     {
         cin>>v1>>v2;
         M[v1*N+v2]=M[v2*N+v1]=1;
     }
+
     DFS(M,N);
     BFS(M,N);
     
-
     return 0;
 }
 
